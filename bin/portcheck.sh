@@ -3,7 +3,7 @@
 # - prüft von dort aus alle SourceIP-TargetIP-Port-Kombinationen.
 # - erfordert ssh und openssl auf allen Systemen
 #
-echo "REMOTE PortChecker, FF 2018"
+echo "REMOTE PortChecker 2018 xd23fe39"
 echo
 # SourceIP Schleife
 for s in $1; do
