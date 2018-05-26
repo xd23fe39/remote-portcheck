@@ -1,6 +1,8 @@
 # remote-portcheck
 
-Testet ausgehend von einem zentralen SSH-Host, ob Kommunikationsverbindungen von einer FW blockiert werden oder nicht
+Getestet wurde das Skript für Linux (RHEL, Debian, Ubuntu).
+
+Ausgehend von entfernten SSH-Host(s) wird getestet, ob Kommunikationsverbindungen von diesen Source-Hosts aus Verbindungen zu den angegebenen Ziel-Hosts möglich sind. Dabei werden **alle** Kombinationen getestet, also S*T*P tests durchgeführt. Geprüft wird, ob eine FW die Kommunikationsverbindungen blockiert (FAIL) oder nicht (OK).
 
 Aufruf:
 
@@ -13,4 +15,5 @@ Anwendungsbeispiel:
 
 ```sh
 ./portcheck.sh syncbox "google.de telekom.de" "80 443"
+./portcheck.sh syncbox "google.de telekom.de" "993 25 587 465"
 ```
