@@ -17,13 +17,16 @@ for s in $1; do
             # Aufruf unterstützt z.B. Disconnect-OpenSSL-by-Q, Timeout bei FW-Blocking
             ssh -x $s "((echo Q | timeout 2 openssl s_client -connect $i:$p) > /dev/null 2>&1 )"
             RES=$?
+            # Ergebnis interpretieren: 0 = OK, 1=CONNECTION_REFUSED, 124 = CONNECTION_TIMEOUT
             if [ "$RES" == "0" ]; then
-                echo "  $s $i $p: OK"
+                echo "  $i tcp/$p: OK"
+            elif [ "$RES" == "1" ]; then
+                echo "  $i tcp/$p: WARN=$RES (Connection refused)"
             elif [ "$RES" == "124" ]; then
-                echo "  $s $i $p: OK=$RES"
+                echo "  $i tcp/$p: FAIL=$RES (Connection timeout)"
             else
                 # FW blockiert oder: unbekannter Fehlercode in $RES
-                echo "  $s $i $p: FAIL=$RES"
+                echo "  $i tcp/$p: FAIL=$RES (Unknown)" 
             fi
         done
     done
