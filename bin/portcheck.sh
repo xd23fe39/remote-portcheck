@@ -11,6 +11,7 @@ let POS=0
 let WARN=0
 let FAIL=0
 let OK=0
+let UNKNOWN=0
 # SourceIP Schleife
 for s in $1; do
     echo "Source IP: $s"
@@ -21,7 +22,7 @@ for s in $1; do
         # Ports-Schleife
         for p in $3; do
             # Testbefehl, enthält diverse Tricks wie z.B. Disconnect-OpenSSL, Timeout bei FW-Blocking (Stealth-Mode)
-            ssh -x $s "((echo Q | timeout 2 openssl s_client -connect $i:$p) > /dev/null 2>&1 )"
+            ssh -q -x $s "((echo Q | timeout 2 openssl s_client -verify 0 -connect $i:$p) > /dev/null 2>&1 )"
             RES=$?
             let POS++
             # 0 = OK, 1=CONNECTION_REFUSED, 124 = TIMEOUT
@@ -31,16 +32,20 @@ for s in $1; do
             elif [ "$RES" == "1" ]; then
                 echo "  $i tcp/$p: WARN=$RES (Connection refused)"
                 let WARN++
+            elif [ "$RES" == "127" ]; then
+                echo "  $i tcp/$p: WARN=$RES (No client certificate)"
+                let WARN++
             elif [ "$RES" == "124" ]; then
                 echo "  $i tcp/$p: FAIL=$RES (Connection timeout)"
                 let FAIL++
             else
                 # FW blockiert oder: unbekannter Fehlercode in $RES
                 echo "  $i tcp/$p: FAIL=$RES (Unknown)" 
+                let UNKNOWN++
             fi
         done
     done
-    echo "  ---"; echo "  Getestet=$POS: OK=$OK WARN=$WARN FAIL=$FAIL";echo
+    echo "  ---"; echo "  Getestet=$POS: OK=$OK WARN=$WARN FAIL=$FAIL UNKNOWN=$UNKNOWN";echo
 done
 echo "  Getestet:       $POS"
 echo "  Erfolgreich:    $OK"
