@@ -40,7 +40,7 @@ for s in $1; do
             fi
         done
     done
-    echo "  ---"; echo "  Getestet: $POS: OK=$OK WARN=$WARN FAIL=$FAIL";echo
+    echo "  ---"; echo "  Getestet=$POS: OK=$OK WARN=$WARN FAIL=$FAIL";echo
 done
 echo "  Getestet:       $POS"
 echo "  Erfolgreich:    $OK"
